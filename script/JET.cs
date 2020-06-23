@@ -34,7 +34,23 @@ public class JET : MonoBehaviour
     public int MaxHp;
     int HP;
 
+    int RollingFlagA = 0;
+    int RollingFlagD = 0;
+    int AFlag = 0;
+    int DFlag = 0;
+    float ACnt = 0;
+    float DCnt = 0;
+
+    //普通に機体傾けるときにもローリングフラグがたっちまうぜ
+    float AACnt = 0;
+    float DDCnt = 0;
+
+    //ローリング１回に何秒かかるか
+    float RollingSpeed = 0.8f;
+    float RollingCnt = 0;
+
     RectTransform GunBoreSight;
+
 
     //何かにぶつかった時に呼ばれる
     void OnCollisionEnter(Collision collision)
@@ -77,6 +93,91 @@ public class JET : MonoBehaviour
         //位置設定
         transform.position += transform.forward * Time.deltaTime * ForwardPower;
 
+        //ローリング処理(A)
+        if (Input.GetKeyUp(KeyCode.A) && BstopFlag == 0 && 0 < AACnt && AACnt < 0.2f)
+        {
+            AFlag = 1;
+            AACnt = 0;
+        }
+        if( AFlag == 1 )
+        {
+            ACnt = ACnt + Time.deltaTime;
+        }
+        if(ACnt > 0.3f)
+        {
+            ACnt = 0;
+            AFlag = 0;
+        }
+        if ( Input.GetKey(KeyCode.A) && BstopFlag == 0 && AFlag == 1 && ACnt <= 0.3f && RollingFlagD == 0)
+        {
+            ACnt = 0;
+            AFlag = 0;
+            RollingFlagA = 1;
+        }
+        //ローリング処理(D)
+        if (Input.GetKeyUp(KeyCode.D) && BstopFlag == 0 && 0 < DDCnt && DDCnt < 0.2f)
+        {
+            DFlag = 1;
+            DDCnt = 0;
+        }
+        if (DFlag == 1)
+        {
+            DCnt = DCnt + Time.deltaTime;
+        }
+        if (DCnt > 0.3f)
+        {
+            DCnt = 0;
+            DFlag = 0;
+        }
+        if (Input.GetKey(KeyCode.D) && BstopFlag == 0 && DFlag == 1 && DCnt <= 0.3f && RollingFlagA == 0)
+        {
+            DCnt = 0;
+            DFlag = 0;
+            RollingFlagD = 1;
+        }
+
+
+        //実際のローリング処理
+        if ( RollingFlagA == 1 || RollingFlagD == 1 )
+        {
+            TiltPower = 0;
+
+            if ( RollingFlagA == 1 )
+            {
+                float LocalNum = (360 / RollingSpeed) * Time.deltaTime;
+
+                transform.Rotate(new Vector3(0, 0, LocalNum));
+
+                Camera.main.transform.RotateAround(transform.localPosition, transform.forward, -LocalNum);
+
+            }
+            if( RollingFlagD == 1 )
+            {
+                float LocalNum = (360 / RollingSpeed) * Time.deltaTime;
+
+                transform.Rotate(new Vector3(0, 0, (360 / RollingSpeed) * Time.deltaTime * -1));
+
+                Camera.main.transform.RotateAround(transform.localPosition, transform.forward, LocalNum);
+            }
+
+            RollingCnt = RollingCnt + Time.deltaTime;
+        }
+
+        // ローリング終了処理
+        if (RollingCnt >= RollingSpeed)
+        {
+
+            RollingFlagA = 0;
+            RollingFlagD = 0;
+            RollingCnt = 0;
+
+            Camera.main.transform.localPosition = new Vector3(0, 10, -20);
+            Camera.main.transform.localEulerAngles = new Vector3(10, 0, 0);
+        }
+
+
+
+
         //前進
         if (Input.GetKey(KeyCode.W) && BstopFlag == 0)
         {
@@ -115,6 +216,8 @@ public class JET : MonoBehaviour
         {
             TiltPower = TiltPower + TiltStatus;
 
+            AACnt = AACnt + 1 * Time.deltaTime;
+
             if (TiltPower > MaxTiltPower)
             {
                 TiltPower = MaxTiltPower;
@@ -124,6 +227,8 @@ public class JET : MonoBehaviour
         {
             TiltPower = TiltPower + (TiltStatus * -1);
 
+            DDCnt = DDCnt + 1 * Time.deltaTime;
+
             if (TiltPower < (MaxTiltPower * -1))
             {
                 TiltPower = (MaxTiltPower * -1);
@@ -131,6 +236,7 @@ public class JET : MonoBehaviour
         }
         if (!Input.GetKey(KeyCode.A) && !Input.GetKey(KeyCode.D) && BstopFlag == 0)
         {
+        
             if (TiltPower > 0)
             {
                 TiltPower = TiltPower - (TiltStatus * 1.5f);
@@ -139,14 +245,23 @@ public class JET : MonoBehaviour
             {
                 TiltPower = TiltPower + (TiltStatus * 1.5f);
             }
+
+            AACnt = 0;
+            DDCnt = 0;
         }
+
+
 
         //傾け実行
         //ここ変えて
-        transform.Rotate(0, 0, TiltPower * Time.deltaTime * Inv_Tilt);
+        if (RollingFlagA == 0 && RollingFlagD == 0)
+        {
+            transform.Rotate(0, 0, TiltPower * Time.deltaTime * Inv_Tilt);
+        }
+        
 
         //Bストップ処理
-        if (Input.GetKey(KeyCode.B) && BstopCT <= 0)
+        if (Input.GetKey(KeyCode.B) && BstopCT <= 0 && RollingFlagA == 0 && RollingFlagD == 0)
         {
             BstopCT = 100;
 
@@ -183,7 +298,9 @@ public class JET : MonoBehaviour
         MousPointer_x = MousPointer_x - (Screen_w / 2);
         MousPointer_y = MousPointer_y - (Screen_h / 2);
 
-        if (BstopFlag == 0)
+
+        //移動処理
+        if ( BstopFlag == 0 && RollingFlagA == 0 && RollingFlagD == 0)
         {
             //機首の上げ下げ
             transform.Rotate(MousPointer_y / RiseStatus * Inv_Rise, 0, 0);
@@ -197,7 +314,6 @@ public class JET : MonoBehaviour
 
 
         // Rayを飛ばす（第1引数がRayの発射座標、第2引数がRayの向き）
-        //Vector3 Raystart = new Vector3(transform.position.x, transform.position.y, transform.position.z + 50);
         Ray ray = new Ray(transform.position, transform.forward);
 
         // outパラメータ用に、Rayのヒット情報を取得するための変数を用意
@@ -256,6 +372,16 @@ public class JET : MonoBehaviour
     public int getBstop()
     {
         return BstopFlag;
+    }
+
+    public int getRollingFlagA()
+    {
+        return RollingFlagA;
+    }
+
+    public int getRollingFlagD()
+    {
+        return RollingFlagD;
     }
 }
 

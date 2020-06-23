@@ -26,6 +26,9 @@ public class LockOnMarker : MonoBehaviour
     void Update()
     {
 
+        //マーカーを非表示
+        this.gameObject.GetComponent<Image>().color = new Color(0f, 0f, 0f, 0f);
+
         //とりあえず"Enemy"タグのついたものにアクセス
         if (GameObject.FindWithTag("Enemy") != null)
         {
@@ -40,10 +43,6 @@ public class LockOnMarker : MonoBehaviour
 
             //ロックオンサークル内に居る敵のリストを取得
             LockOnEnemysFlag = l.LockOngetTargetsFlag();
-
-
-            //マーカーを非表示
-            this.gameObject.GetComponent<Image>().color = new Color(0f, 0f, 0f, 0f);
 
 
             if (enemys.Count != 0)
@@ -65,14 +64,13 @@ public class LockOnMarker : MonoBehaviour
                         //マーカーを表示
                         this.gameObject.GetComponent<Image>().color = new Color(0f, 1f, 1f, 1f);
 
-                        //マーカーを固定
-                        //transform.localEulerAngles = new Vector3(0, 0, transform.localEulerAngles.z);
 
                         //マーカーを回転
                         transform.localEulerAngles = new Vector3(0, 0, transform.localEulerAngles.z + 0.5f);
 
                         if(l.getFlagListCircle() == markernum)
                         {
+                            //赤色にして表示
                             this.gameObject.GetComponent<Image>().color = new Color(1f, 0f, 0f, 1f);
                         }
 

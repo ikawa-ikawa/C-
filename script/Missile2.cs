@@ -18,6 +18,8 @@ public class Missile2 : MonoBehaviour
 
     float Period = 0;
 
+    int PassingFlag = 0;
+
     GameObject Enemy;
 
     Vector3 TargetPosition;
@@ -105,10 +107,13 @@ public class Missile2 : MonoBehaviour
             Quaternion rotation = Quaternion.LookRotation(relativePos);
 
             //相手の方をTurningPowerにそって向く
-            transform.rotation = Quaternion.Slerp(transform.rotation, rotation, TurningPower);
+            if (PassingFlag == 0)
+            {
+                transform.rotation = Quaternion.Slerp(transform.rotation, rotation, TurningPower);
 
-            //時間経過事に旋回力を上げる
-            TurningPower = TurningPower + Time.deltaTime * 0.01f;
+                //時間経過事に旋回力を上げる
+                TurningPower = TurningPower + Time.deltaTime * 0.01f;
+            }
 
             //時間計測
             Period = Period + Time.deltaTime;
@@ -117,6 +122,15 @@ public class Missile2 : MonoBehaviour
             if (Period >= TrackingTime)
             {
                 TurningPower = TurningPower - Time.deltaTime * 0.05f;
+            }
+
+            float Dot = Vector3.Dot( relativePos, this.transform.forward);
+
+            //内積を取ってマイナスなら敵を通り越したと判断
+            if(Dot < 0 || PassingFlag == 1)
+            {
+                PassingFlag = 1;
+                TurningPower = TurningPower - Time.deltaTime * 0.01f;
             }
 
         }
