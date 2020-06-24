@@ -33,7 +33,7 @@ public class Missile2 : MonoBehaviour
     //何かにぶつかった時に呼ばれる
     void OnCollisionEnter(Collision other)
     {
-        if(other.gameObject.CompareTag("Missile"))
+        if(other.gameObject.CompareTag("Missile") || other.gameObject.CompareTag("Shield"))
         {
 
         }
@@ -46,6 +46,7 @@ public class Missile2 : MonoBehaviour
             ExplosionFlag = 1;
 
             ExplosionPosition = transform.position;
+
         }
 
     }

@@ -2,15 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Bullet2 : MonoBehaviour
+public class EnemyBullet : MonoBehaviour
 {
-
     public GameObject ExplosionPrefab;
     public int AttackPower;
     public int ErrorRange;
-
-
-
 
     //何かにぶつかった時に呼ばれる
     void OnCollisionEnter(Collision other)
@@ -26,6 +22,7 @@ public class Bullet2 : MonoBehaviour
         }
 
     }
+
 
     public int getAttackPower()
     {
@@ -45,6 +42,6 @@ public class Bullet2 : MonoBehaviour
 
     void Update()
     {
-        //transform.position = transform.position + transform.forward * Speed * Time.deltaTime;
+        //transform.position = transform.position + transform.forward * 500 * Time.deltaTime;
     }
 }

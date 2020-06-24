@@ -86,6 +86,10 @@ public class JET : MonoBehaviour
 
     void Update()
     {
+        if(HP > MaxHp)
+        {
+            HP = MaxHp;
+        }
   
         //ステータス取得
         Rigidbody rigidbody = GetComponent<Rigidbody>();
@@ -367,6 +371,11 @@ public class JET : MonoBehaviour
     public int getMaxHP()
     {
         return MaxHp;
+    }
+
+    public void setHP(int x)
+    {
+        HP = x;
     }
 
     public int getBstop()
