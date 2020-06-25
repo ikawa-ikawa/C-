@@ -9,6 +9,7 @@ public class EnemyMuzzle : MonoBehaviour
     public float AttackSpeed;
     public float AngleError;
     private float shotInterval;
+    public int ForwardNum;     //正面軸どれやねんz:0 x:1 y:2
 
     void Start()
     {
@@ -28,18 +29,29 @@ public class EnemyMuzzle : MonoBehaviour
             float ErrorY = Random.Range(-AngleError, AngleError);
 
 
-            //GameObject bullet = (GameObject)Instantiate(bulletPrefab, transform.position, Quaternion.Euler(transform.parent.eulerAngles.x, transform.parent.eulerAngles.y, 0));
-            GameObject bullet = (GameObject)Instantiate(bulletPrefab, transform.position, Quaternion.Euler(transform.parent.eulerAngles.x + ErrorX, transform.parent.eulerAngles.y + ErrorY, 0));
-            Rigidbody bulletRb = bullet.GetComponent<Rigidbody>();
-            Transform bulletTr = bullet.GetComponent<Transform>();
+            if( ForwardNum == 0 )
+            {
+                GameObject bullet = (GameObject)Instantiate(bulletPrefab, transform.position, Quaternion.Euler(transform.parent.eulerAngles.x + ErrorX, transform.parent.eulerAngles.y + ErrorY, 0));
+                Rigidbody bulletRb = bullet.GetComponent<Rigidbody>();
+                Transform bulletTr = bullet.GetComponent<Transform>();
+                bulletRb.AddForce(bullet.transform.forward * shotSpeed);
+
+                //射撃されてから3秒後に銃弾のオブジェクトを破壊する
+                Destroy(bullet, 2.0f);
+            }
+            if( ForwardNum == 1 )
+            {
+                GameObject bullet = (GameObject)Instantiate(bulletPrefab, transform.position, Quaternion.Euler(0, transform.parent.eulerAngles.y + ErrorX , transform.parent.eulerAngles.z + ErrorY));
+                Rigidbody bulletRb = bullet.GetComponent<Rigidbody>();
+                Transform bulletTr = bullet.GetComponent<Transform>();
+                bulletRb.AddForce(bullet.transform.right * shotSpeed);
+
+                //射撃されてから3秒後に銃弾のオブジェクトを破壊する
+                Destroy(bullet, 2.0f);
+            }
 
 
 
-            bulletRb.AddForce(bullet.transform.forward * shotSpeed);
-
-
-            //射撃されてから3秒後に銃弾のオブジェクトを破壊する
-            Destroy(bullet, 3.0f);
         }
     }
 }
