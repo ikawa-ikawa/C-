@@ -12,13 +12,13 @@ public class LockOnSystem : MonoBehaviour
 
     //画面内の敵の位置情報（２０）までしか格納できない
     //Vector3[] Targets = new Vector3[200];
-    List<Vector3> Targets = new List<Vector3>();
+    List<Transform> Targets = new List<Transform>();
     int[] FlagList = new int[200];
 
     //ロックオンしている敵情報（こっちは配列なことに注意）
     int[] LockOnTargetsFlag = new int[10];
 
-    List<Vector3> Concentrations = new List<Vector3>();
+    List<Transform> Concentrations = new List<Transform>();
     int Concentration;
     int ConcentrationCountBank;//FlagListCircleの要素数が減ったことを観測するための保存用
     float ConcentrationCT;
@@ -43,9 +43,7 @@ public class LockOnSystem : MonoBehaviour
     void Update()
     {
 
-        
-
-        //存在する敵のオブジェクトリスト
+        //存在する敵のオブジェクトリスト「Objects」
         ExistenceEnemys = GameObject.FindGameObjectsWithTag("Enemy");
 
 
@@ -70,6 +68,7 @@ public class LockOnSystem : MonoBehaviour
 
         i = 0;
 
+
         //敵のオブジェクトリストに対してアクセス
         while ( i < ExistenceEnemys.Length)
         {
@@ -93,7 +92,7 @@ public class LockOnSystem : MonoBehaviour
             //画面内に敵がいるフラグが立っているなら
             if(FlagList[i] == 1)
             {
-                Targets.Add(ExistenceEnemys[i].GetComponent<Transform>().transform.position);
+                Targets.Add(ExistenceEnemys[i].GetComponent<Transform>() );
             }
 
             i = i + 1;
@@ -102,11 +101,11 @@ public class LockOnSystem : MonoBehaviour
         i = 0;
 
         //画面内に居る敵に対してその位置情報にアクセス
-        while(i < Targets.Count)
+        while (i < Targets.Count)
         {
 
             //敵を画面のどの座標に表示しているかを取得
-            Vector2 ScreenPoint = RectTransformUtility.WorldToScreenPoint(Camera.main, Targets[i]);
+            Vector2 ScreenPoint = RectTransformUtility.WorldToScreenPoint(Camera.main, Targets[i].transform.position);
 
             //↓ここをScreenWとScreenHに変えて下さい
             ScreenPoint.x = ScreenPoint.x - (Screen.width / 2);
@@ -131,7 +130,7 @@ public class LockOnSystem : MonoBehaviour
         i = 0;
 
         //コンセントレーション処理
-        ConcentrationCT = ConcentrationCT + 1;
+        ConcentrationCT = ConcentrationCT + 1 * Time.deltaTime;
 
         //FlagListCircleの要素数が直前より減った場合の処理
         if(FlagListCircle.Count < ConcentrationCountBank)
@@ -160,7 +159,7 @@ public class LockOnSystem : MonoBehaviour
             ConcentrationCT = 0;
         }
 
-        if (Input.GetKey(KeyCode.LeftShift) && ConcentrationCT > 200)
+        if (Input.GetKey(KeyCode.LeftShift) && ConcentrationCT > 0.5)
         {
             ConcentrationCT = 0;
 
@@ -190,7 +189,7 @@ public class LockOnSystem : MonoBehaviour
 
 
     
-    public List<Vector3> getTarget()
+    public List<Transform> getTarget()
     {
         return Targets;
     }
@@ -200,16 +199,14 @@ public class LockOnSystem : MonoBehaviour
         return LockOnTargetsFlag;
     }
 
-    public Vector3 getConcentration()
+    public Transform getConcentration()
     {
         if(Concentrations.Count != 0)
         {
             return Concentrations[Concentration];
         }
-        else
-        {
-            return new Vector3(0,0,0);
-        }
+
+        return null;
     }
 
     public int getConcentrationsCount()

@@ -5,54 +5,59 @@ using UnityEngine.UI;
 
 public class LockOnMarker : MonoBehaviour
 {
+    public int markernum;
 
-    GameObject enemy;
-    List<Vector3> enemys;
+    GameObject Enemy;
+    List<Transform> enemys;
 
 
     GameObject LockOnEnemy;
     int[] LockOnEnemysFlag;
 
 
-    public int markernum;
+    Image Img;
 
-    // Start is called before the first frame update
+    LockOnSystem Sys;
+
     void Start()
     {
-        this.gameObject.GetComponent<Image>().color = new Color(0f, 0f, 0f, 0f);//透明
+        Img = this.gameObject.GetComponent<Image>();
+
+        Img.color = new Color(0f, 0f, 0f, 0f);//透明
     }
 
-    // Update is called once per frame
     void Update()
     {
-
         //マーカーを非表示
-        this.gameObject.GetComponent<Image>().color = new Color(0f, 0f, 0f, 0f);
+        Img.color = new Color(0f, 0f, 0f, 0f);
 
-        //とりあえず"Enemy"タグのついたものにアクセス
-        if (GameObject.FindWithTag("Enemy") != null)
+        Enemy = GameObject.FindWithTag("Enemy");
+
+
+        if ( Enemy != null )
         {
-            enemy = GameObject.FindWithTag("Enemy");
 
-            /*ロックオンシステム*/
-            LockOnSystem l = enemy.GetComponent<LockOnSystem>();
-
+            Sys = Enemy.GetComponent<LockOnSystem>();
 
             //画面に映っている敵のリストを取得
-            enemys = l.getTarget();
+            enemys = Sys.getTarget();
 
             //ロックオンサークル内に居る敵のリストを取得
-            LockOnEnemysFlag = l.LockOngetTargetsFlag();
+            LockOnEnemysFlag = Sys.LockOngetTargetsFlag();
 
-
-            if (enemys.Count != 0)
+            if (enemys.Count >= markernum + 1)
             {
                 //enemys[markernum]の範囲外参照を避けるための処理
                 if (enemys.Count >= markernum + 1)
                 {
+                    Vector2 position = new Vector2( 0, 0 );
 
-                    //画面にマーカーを表示する位置を計算
-                    Vector2 position = RectTransformUtility.WorldToScreenPoint(Camera.main, enemys[markernum]);
+                    if (enemys[markernum] != null)
+                    {
+                        //画面にマーカーを表示する位置を計算
+                        position = RectTransformUtility.WorldToScreenPoint(Camera.main, enemys[markernum].transform.position);
+                    }
+                    
 
                     //画像を計算した位置にポジションを変える
                     this.transform.position = new Vector3(position.x, position.y, 0f);
@@ -62,37 +67,37 @@ public class LockOnMarker : MonoBehaviour
                     if( LockOnEnemysFlag[markernum] == 1 )
                     {
                         //マーカーを表示
-                        this.gameObject.GetComponent<Image>().color = new Color(0f, 1f, 1f, 1f);
-
+                        Img.color = new Color(0f, 1f, 1f, 1f);
 
                         //マーカーを回転
                         transform.localEulerAngles = new Vector3(0, 0, transform.localEulerAngles.z + 0.5f);
 
-                        if(l.getFlagListCircle() == markernum)
+                        if(Sys.getFlagListCircle() == markernum)
                         {
                             //赤色にして表示
-                            this.gameObject.GetComponent<Image>().color = new Color(1f, 0f, 0f, 1f);
+                            Img.color = new Color(1f, 0f, 0f, 1f);
                         }
-
                     }
                     else
                     {
                         //マーカーを表示
-                        this.gameObject.GetComponent<Image>().color = new Color(0f, 1f, 1f, 0.5f);
+                        Img.color = new Color(0f, 1f, 1f, 0.5f);
 
                         //マーカーを回転
                         transform.localEulerAngles = new Vector3(0, 0, transform.localEulerAngles.z + 0.2f);
 
-                    }
-                                        
-                }
-                
-
-
+                    }                                        
+                }                
             }
         }
 
         transform.localEulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y, transform.eulerAngles.z);
 
+        // カメラ処理
+        if (Input.GetKey(KeyCode.Mouse2))
+        {
+            // バックカメラがアクティブな時は非表示
+            Img.color = new Color(0f, 0f, 0f, 0f);
+        }
     }
 }

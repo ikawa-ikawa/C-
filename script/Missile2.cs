@@ -28,6 +28,9 @@ public class Missile2 : MonoBehaviour
 
     int ExplosionFlag = 0;
     Vector3 ExplosionPosition;
+    LockOnSystem Sys;
+
+    Transform Trans;
 
 
     //何かにぶつかった時に呼ばれる
@@ -67,29 +70,28 @@ public class Missile2 : MonoBehaviour
 
         Period = 0;
 
-        //とりあえず"Enemy"タグのついたものにアクセス
-        if (GameObject.FindWithTag("Enemy") != null)
-        {
-            Enemy = GameObject.FindWithTag("Enemy");
+        Enemy = GameObject.FindWithTag("Enemy");
 
+        if (Enemy != null)
+        {
             /*ロックオンシステム*/
-            LockOnSystem Sys = Enemy.GetComponent<LockOnSystem>();
+            Sys = Enemy.GetComponent<LockOnSystem>();
 
             if (Sys.getConcentrationsCount() != 0)
             {
-                TargetPosition = Sys.getConcentration();
                 NonTarget = 0;
+                Trans = Sys.getConcentration();
             }
             else
             {
                 NonTarget = 1;
             }
-
         }
         else
         {
             NonTarget = 1;
         }
+
     }
 
 
@@ -97,41 +99,48 @@ public class Missile2 : MonoBehaviour
     void Update()
     {
 
+
         if (NonTarget == 0)
         {
-            //自分の位置とターゲットの位置の差分を取得
-            Vector3 relativePos = TargetPosition - transform.position;
 
-
-
-            //よくわからん
-            Quaternion rotation = Quaternion.LookRotation(relativePos);
-
-            //相手の方をTurningPowerにそって向く
-            if (PassingFlag == 0)
+            if (Trans != null)
             {
-                transform.rotation = Quaternion.Slerp(transform.rotation, rotation, TurningPower);
 
-                //時間経過事に旋回力を上げる
-                TurningPower = TurningPower + Time.deltaTime * 0.01f;
-            }
+                TargetPosition = Trans.transform.position;
 
-            //時間計測
-            Period = Period + Time.deltaTime;
+                //自分の位置とターゲットの位置の差分を取得
+                Vector3 relativePos = TargetPosition - transform.position;
 
-            //追尾時間を超えたらどっかいく
-            if (Period >= TrackingTime)
-            {
-                TurningPower = TurningPower - Time.deltaTime * 0.05f;
-            }
 
-            float Dot = Vector3.Dot( relativePos, this.transform.forward);
+                //よくわからん
+                Quaternion rotation = Quaternion.LookRotation(relativePos);
 
-            //内積を取ってマイナスなら敵を通り越したと判断
-            if(Dot < 0 || PassingFlag == 1)
-            {
-                PassingFlag = 1;
-                TurningPower = TurningPower - Time.deltaTime * 0.01f;
+                //相手の方をTurningPowerにそって向く
+                if (PassingFlag == 0)
+                {
+                    transform.rotation = Quaternion.Slerp(transform.rotation, rotation, TurningPower);
+
+                    //時間経過事に旋回力を上げる
+                    TurningPower = TurningPower + Time.deltaTime * 0.01f;
+                }
+
+                //時間計測
+                Period = Period + Time.deltaTime;
+
+                //追尾時間を超えたらどっかいく
+                if (Period >= TrackingTime)
+                {
+                    TurningPower = TurningPower - Time.deltaTime * 0.05f;
+                }
+
+                float Dot = Vector3.Dot(relativePos, this.transform.forward);
+
+                //内積を取ってマイナスなら敵を通り越したと判断
+                if (Dot < 0 || PassingFlag == 1)
+                {
+                    PassingFlag = 1;
+                    TurningPower = TurningPower - Time.deltaTime * 0.01f;
+                }
             }
 
         }

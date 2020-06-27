@@ -31,7 +31,7 @@ public class EnemyBullet : MonoBehaviour
 
     public int getErrorRange()
     {
-        //乱数はintになります．
+        //乱数はintな．
         return (int)Random.Range(-ErrorRange, ErrorRange + 1);
     }
 

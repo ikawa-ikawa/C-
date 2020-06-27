@@ -10,6 +10,8 @@ public class Bullet : MonoBehaviour
     public float AttackSpeed;
     private float shotInterval;
 
+
+
     void Start()
     {
         

@@ -146,7 +146,12 @@ public class EnemyMarker : MonoBehaviour
                     //表示する
                     gameObject.GetComponent<Image>().color = new Color( 1f, 0f, 0f, 1f );
 
-                    
+                    // カメラ処理
+                    if (Input.GetKey(KeyCode.Mouse2))
+                    {
+                        this.gameObject.GetComponent<Image>().color = new Color(0f, 0f, 0f, 0f);
+                    }
+
 
                 }
             }

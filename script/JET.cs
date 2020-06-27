@@ -6,20 +6,21 @@ using UnityEngine.UI;
 
 public class JET : MonoBehaviour
 {
-    float ForwardStatus = 0.1f;     //加速力
-    float BrakeStatus = 0.05f;      //ブレーキ力
-    float TiltStatus = 1f;          //傾け力
-    float RotationStatus = 2500;    //機首の回転力(高い方が弱い)
-    float RiseStatus = 500;         //機首の上げ下げ（高い方が弱い
+    public float ForwardStatus = 0.1f;     //加速力
+    public float BrakeStatus = 0.05f;      //ブレーキ力
+    public float TiltStatus = 1f;          //傾け力
+    public float RotationStatus = 2500;    //機首の回転力(高い方が弱い)
+    public float RiseStatus = 500;         //機首の上げ下げ（高い方が弱い
+    public int MaxHp;
+    public float MaxForwardPower = 50f;     //最高速度
+    public float MaxTiltPower = 100;         //最高傾け
+
+    float ForwardPower = 0.0f;        //前進力(計算用)
+    float TiltPower = 0;              //傾け(計算用)
 
     float Inv_Rise = -1;
     float Inv_Rotation = -1;
     float Inv_Tilt = 1;
-
-    float ForwardPower;
-    float MaxForwardPower;
-    float TiltPower;
-    float MaxTiltPower;
 
     int BstopFlag;
     int BstopCT;
@@ -31,7 +32,6 @@ public class JET : MonoBehaviour
     int Screen_w;
     int Screen_h;
 
-    public int MaxHp;
     int HP;
 
     int RollingFlagA = 0;
@@ -51,12 +51,16 @@ public class JET : MonoBehaviour
 
     RectTransform GunBoreSight;
 
+    // カメラ
+    private GameObject MainCam;
+    [SerializeField] GameObject SubCam = null;
+
+
+    Rigidbody rigidbody_a;
 
     //何かにぶつかった時に呼ばれる
     void OnCollisionEnter(Collision collision)
     {
-        Debug.Log(collision.gameObject.name); 
-
         TiltPower = 0;
         ForwardPower = 0;
     }
@@ -68,31 +72,44 @@ public class JET : MonoBehaviour
 
     void Start()
     {
-
-
-        ForwardPower = 0.0f;        //前進力(計算用)
-        MaxForwardPower = 50f;     //最高速度
-
-        TiltPower = 0;              //傾け(計算用)
-        MaxTiltPower = 100;         //最高傾け
-
         BstopFlag = 0;
         BstopCT = 100;
 
         HP = MaxHp;
 
         GunBoreSight = GameObject.Find("GunBoreSight").GetComponent<RectTransform>();
+
+        rigidbody_a = GetComponent<Rigidbody>();
+
+        // カメラ処理
+        MainCam = GameObject.Find("MainCamera");
+
+        SubCam.SetActive(true);
+        
     }
 
     void Update()
     {
-        if(HP > MaxHp)
+        // カメラ処理
+        if (Input.GetKey(KeyCode.Mouse2) /*&& RollingFlagA == 0 && RollingFlagD == 0*/)
+        {
+        
+            //MainCam.SetActive(false);
+            SubCam.SetActive(true);
+            
+        }
+        else
+        {
+            //MainCam.SetActive(true);
+            SubCam.SetActive(false);
+        }
+
+        // HP処理
+        if (HP > MaxHp)
         {
             HP = MaxHp;
         }
   
-        //ステータス取得
-        Rigidbody rigidbody = GetComponent<Rigidbody>();
 
         //位置設定
         transform.position += transform.forward * Time.deltaTime * ForwardPower;
@@ -152,7 +169,7 @@ public class JET : MonoBehaviour
 
                 transform.Rotate(new Vector3(0, 0, LocalNum));
 
-                Camera.main.transform.RotateAround(transform.localPosition, transform.forward, -LocalNum);
+                MainCam.transform.RotateAround(transform.localPosition, transform.forward, -LocalNum);
 
             }
             if( RollingFlagD == 1 )
@@ -161,7 +178,7 @@ public class JET : MonoBehaviour
 
                 transform.Rotate(new Vector3(0, 0, (360 / RollingSpeed) * Time.deltaTime * -1));
 
-                Camera.main.transform.RotateAround(transform.localPosition, transform.forward, LocalNum);
+                MainCam.transform.RotateAround(transform.localPosition, transform.forward, LocalNum);
             }
 
             RollingCnt = RollingCnt + Time.deltaTime;
@@ -175,8 +192,8 @@ public class JET : MonoBehaviour
             RollingFlagD = 0;
             RollingCnt = 0;
 
-            Camera.main.transform.localPosition = new Vector3(0, 10, -20);
-            Camera.main.transform.localEulerAngles = new Vector3(10, 0, 0);
+            MainCam.transform.localPosition = new Vector3(0, 10, -20);
+            MainCam.transform.localEulerAngles = new Vector3(10, 0, 0);
         }
 
 
@@ -216,7 +233,7 @@ public class JET : MonoBehaviour
         }
 
         //機体の傾け
-        if (Input.GetKey(KeyCode.A) && BstopFlag == 0)
+        if (Input.GetKey(KeyCode.A) && BstopFlag == 0 && RollingFlagA == 0 && RollingFlagD == 0)
         {
             TiltPower = TiltPower + TiltStatus;
 
@@ -227,7 +244,7 @@ public class JET : MonoBehaviour
                 TiltPower = MaxTiltPower;
             }
         }
-        if (Input.GetKey(KeyCode.D) && BstopFlag == 0)
+        if (Input.GetKey(KeyCode.D) && BstopFlag == 0 && RollingFlagA == 0 && RollingFlagD == 0)
         {
             TiltPower = TiltPower + (TiltStatus * -1);
 
@@ -274,7 +291,7 @@ public class JET : MonoBehaviour
                 BstopFlag = 1;
                 ForwardPower = 0.0f;        //前進力(計算用)
                 TiltPower = 0;              //傾け(計算用)
-                rigidbody.velocity = Vector3.zero;
+                rigidbody_a.velocity = Vector3.zero;
             }
             else if (BstopFlag == 1)
             {

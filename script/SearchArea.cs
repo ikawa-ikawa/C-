@@ -4,44 +4,49 @@ using UnityEngine;
 
 public class SearchArea : MonoBehaviour
 {
+
+    int Flag = 0;
+
+    Transform EnemyPos;
+    Vector3 Position;
+
     private void OnTriggerStay(Collider other)
     {
-        if( !(other.tag == "Bullet") && !(other.tag == "Missile") && !(other.tag == "EnemyBullet") && !(other.tag == "Shield") && !(other.tag == "Object"))
+
+        if ( other.transform.root.CompareTag("Enemy") && Flag == 0 )
         {
-            if( other.transform.parent.tag == "Player" )
-            {
-                //プレイヤーの方向差分
-                var PlayerDirection = other.transform.position - transform.parent.position;
+            Flag = 1;
 
-                //よくわからん
-                Quaternion Rotation = Quaternion.LookRotation(PlayerDirection);
-
-                //相手の方を向く
-                transform.parent.rotation = Quaternion.Slerp(transform.parent.rotation, Rotation, 0.5f * Time.deltaTime);
-            }
-            else if (other.transform.parent.transform.parent.tag == "Player")
-            {
-                //プレイヤーの方向差分
-                var PlayerDirection = other.transform.position - transform.parent.position;
-
-                //よくわからん
-                Quaternion Rotation = Quaternion.LookRotation(PlayerDirection);
-
-                //相手の方を向く
-                transform.parent.rotation = Quaternion.Slerp(transform.parent.rotation, Rotation, 0.5f * Time.deltaTime);
-
-            }  
+            EnemyPos = other.GetComponent<Transform>();
+            Position = EnemyPos.position;
         }
-        
+    }
+
+    void OnTriggerExit(Collider other)
+    {
+        if (other.transform.root.CompareTag("Enemy"))
+        {
+            Flag = 0;
+        }
     }
 
     void Start()
     {
-        
+
     }
 
-    void Update()
+    void FixedUpdate()
     {
-        
+        Flag = 0;
+    }
+
+    public int getFlag()
+    {
+        return Flag;
+    }
+
+    public Vector3 getPosition()
+    {
+        return Position;
     }
 }

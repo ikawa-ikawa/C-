@@ -8,6 +8,15 @@ public class EnemyManagement : MonoBehaviour
     public GameObject ExplosionPrefab;
     public int HP = 5000;
 
+    //弾の攻撃力とか取るためのやつ
+    Bullet2 BulletObje;
+
+    //ミサイルの攻撃力とか取るためのやつ
+    Missile2 MissileObje;
+
+    // キャンバス下に設定するために取得
+    GameObject canvas;
+
     //メインカメラに付いているタグ名
     private const string MAIN_CAMERA_TAG_NAME = "MainCamera";
 
@@ -19,9 +28,6 @@ public class EnemyManagement : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Bullet"))
         {
-            //弾の攻撃力とか取るためのやつ
-            Bullet2 BulletObje = other.gameObject.GetComponent<Bullet2>();
-
             // ここでの位置は指定しても意味ない
             GameObject DamageUI = (GameObject)Instantiate(DamageUIPrefab, new Vector3(50f, 50f, 0f), Quaternion.Euler(0, 0, 0));
 
@@ -30,9 +36,6 @@ public class EnemyManagement : MonoBehaviour
 
             // 表示する場所を決定する（Y軸乱数）
             Vector3 Tmp = new Vector3(Position.x, Position.y + Random.Range(0f, 40f), 0f);
-
-            // キャンバス下に設定するために取得
-            GameObject canvas = GameObject.Find("Canvas");
 
             //キャンバスの子に設定
             DamageUI.transform.SetParent(canvas.transform, false);
@@ -59,8 +62,6 @@ public class EnemyManagement : MonoBehaviour
 
         if(other.gameObject.CompareTag("Missile"))
         {
-            //ミサイルの攻撃力とか取るためのやつ
-            Missile2 MissileObje = other.gameObject.GetComponent<Missile2>();
 
             // ここでの位置は指定しても意味ない
             GameObject DamageUI = (GameObject)Instantiate(DamageUIPrefab, new Vector3 ( 50f , 50f, 0f ), Quaternion.Euler(0, 0, 0));
@@ -70,9 +71,6 @@ public class EnemyManagement : MonoBehaviour
             
             // 表示する場所を決定する（Y軸乱数）
             Vector3 Tmp = new Vector3(Position.x, Position.y + Random.Range(0f, 40f), 0f);
-
-            // キャンバス下に設定するために取得
-            GameObject canvas = GameObject.Find("Canvas");
 
             //キャンバスの子に設定
             DamageUI.transform.SetParent(canvas.transform, false);
@@ -94,13 +92,22 @@ public class EnemyManagement : MonoBehaviour
         }
 
 
-        Debug.Log("ヒット判定：（EnemyManagement）：" + other.gameObject.tag);
+        //Debug.Log("ヒット判定：（EnemyManagement）：" + other.gameObject.tag);
         
     }
 
     void Start()
     {
         isRendered = false;
+
+        //弾の攻撃力とか取るためのやつ
+        BulletObje = GameObject.Find("Bullet").gameObject.GetComponent<Bullet2>();
+
+        //ミサイルの攻撃力とか取るためのやつ
+        MissileObje = GameObject.Find("Missile").gameObject.GetComponent<Missile2>();
+
+        // キャンバス下に設定するために取得
+        canvas = GameObject.Find("Canvas");
     }
 
     void Update()

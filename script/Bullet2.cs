@@ -5,7 +5,7 @@ using UnityEngine;
 public class Bullet2 : MonoBehaviour
 {
 
-    public GameObject ExplosionPrefab;
+    //public GameObject ExplosionPrefab;
     public int AttackPower;
     public int ErrorRange;
 
@@ -21,7 +21,7 @@ public class Bullet2 : MonoBehaviour
         }
         else
         {
-            Instantiate(ExplosionPrefab, this.transform.position, Quaternion.identity);
+            //Instantiate(ExplosionPrefab, this.transform.position, Quaternion.identity);
             Destroy(this.gameObject);
         }
 
@@ -34,7 +34,7 @@ public class Bullet2 : MonoBehaviour
 
     public int getErrorRange()
     {
-        //乱数はintになります．
+        //乱数はintな．
         return (int)Random.Range(-ErrorRange, ErrorRange + 1);
     }
 
@@ -45,6 +45,6 @@ public class Bullet2 : MonoBehaviour
 
     void Update()
     {
-        //transform.position = transform.position + transform.forward * Speed * Time.deltaTime;
+
     }
 }
