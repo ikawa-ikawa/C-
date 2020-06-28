@@ -5,25 +5,26 @@ using UnityEngine;
 public class Pylon : MonoBehaviour
 {
     SearchArea2 Sys;
-    Transform JetTr;
+    GameObject Local;
 
     public int ForwardNum;     //正面軸どれやねんz:0 x:1 y:2 -z:3 -x:4 -y:5
 
     void Start()
     {
         //1度親に行かないと同階層のものが取れない
-        Sys = GameObject.Find("SearchArea2").GetComponent<SearchArea2>();
+        Local = transform.Find("Turret").transform.Find("SearchArea2").gameObject;
+        Sys = Local.GetComponent<SearchArea2>();
 
-        JetTr = GameObject.Find("JET").GetComponent<Transform>();
     }
 
     void Update()
     {
         if(Sys.getFlag() == 1)
         {
+            //Sys = Local.GetComponent<SearchArea2>();
 
             //プレイヤーの方向差分
-            var Direction = JetTr.transform.position - transform.position;
+            var Direction = Sys.getPosition() - transform.position;
 
             //y軸固定
             Direction.y = 0;

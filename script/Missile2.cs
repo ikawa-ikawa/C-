@@ -9,27 +9,23 @@ public class Missile2 : MonoBehaviour
     // 着弾時間
     public float TrackingTime;
     public float ErrorRange;
-
     public float Speed;
     public float TurningPower;
-
-    public GameObject ExplosionPrefab;
     public int AttackPower;
+    public GameObject ExplosionPrefab;
 
     float Period = 0;
 
+    int NonTarget;
     int PassingFlag = 0;
+    int ExplosionFlag = 0;
 
-    GameObject Enemy;
+    GameObject MotherShip;
 
     Vector3 TargetPosition;
-
-    int NonTarget;
-
-    int ExplosionFlag = 0;
     Vector3 ExplosionPosition;
-    LockOnSystem Sys;
 
+    LockOnSystem Sys;
     Transform Trans;
 
 
@@ -61,48 +57,36 @@ public class Missile2 : MonoBehaviour
 
     public int getErrorRange()
     {
-        //乱数はintになります．
+        //乱数はintな．
         return (int)Random.Range(-ErrorRange, ErrorRange + 1);
     }
 
     void Start()
     {
-
         Period = 0;
 
-        Enemy = GameObject.FindWithTag("Enemy");
+        MotherShip = GameObject.FindWithTag("MotherShip");
 
-        if (Enemy != null)
+        /*ロックオンシステム*/
+        Sys = MotherShip.GetComponent<LockOnSystem>();
+
+        if (Sys.getConcentrationsCount() != 0)
         {
-            /*ロックオンシステム*/
-            Sys = Enemy.GetComponent<LockOnSystem>();
-
-            if (Sys.getConcentrationsCount() != 0)
-            {
-                NonTarget = 0;
-                Trans = Sys.getConcentration();
-            }
-            else
-            {
-                NonTarget = 1;
-            }
+            NonTarget = 0;
+            Trans = Sys.getConcentration();
         }
         else
         {
             NonTarget = 1;
         }
-
     }
 
 
 
     void Update()
     {
-
-
         if (NonTarget == 0)
         {
-
             if (Trans != null)
             {
 
@@ -149,7 +133,7 @@ public class Missile2 : MonoBehaviour
         if(ExplosionFlag == 0)
         {
             //移動処理
-            transform.position = transform.position + transform.forward * Speed;
+            transform.position = transform.position + transform.forward * Speed * Time.deltaTime;
         }
         else
         {

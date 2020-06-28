@@ -11,12 +11,14 @@ public class EnemyMuzzle : MonoBehaviour
     private float shotInterval;
     public int ForwardNum;     //正面軸どれやねんz:0 x:1 y:2
 
+    GameObject Local;
     SearchArea2 Sys;
     Transform Jet;
 
     void Start()
     {
-        Sys = transform.parent.Find("SearchArea2").GetComponent<SearchArea2>();
+        Local = transform.parent.Find("SearchArea2").gameObject;
+        Sys = Local.GetComponent<SearchArea2>();
         Jet = GameObject.Find("JET").GetComponent<Transform>();
     }
 
@@ -33,14 +35,14 @@ public class EnemyMuzzle : MonoBehaviour
             float ErrorY = Random.Range(-AngleError, AngleError);
 
             // サーチエリアにプレイヤーが居る場合のみ発射
-            if( Sys.getFlag() == 1)
+            if( Sys.getPosition() != null)
             {
-
                 RaycastHit hit;
 
-                if( Physics.Linecast(transform.position, Jet.position, out hit ))
+                if ( Physics.Linecast( transform.position, Sys.getPosition(), out hit ))
                 {
-                    if ( hit.transform.root.CompareTag("Player") || hit.transform.root.CompareTag("Shield"))
+
+                    if ( hit.transform.CompareTag("Player") || hit.transform.CompareTag("Shield") || hit.transform.CompareTag("Ally") || hit.transform.CompareTag("Bullet") )
                     {
                         if (ForwardNum == 0)
                         {
@@ -50,7 +52,7 @@ public class EnemyMuzzle : MonoBehaviour
                             bulletRb.AddForce(bullet.transform.forward * shotSpeed);
 
                             //射撃されてから3秒後に銃弾のオブジェクトを破壊する
-                            Destroy(bullet, 2.0f);
+                            Destroy(bullet, 3.0f);
                         }
                         if (ForwardNum == 1)
                         {
@@ -60,7 +62,7 @@ public class EnemyMuzzle : MonoBehaviour
                             bulletRb.AddForce(bullet.transform.right * shotSpeed);
 
                             //射撃されてから3秒後に銃弾のオブジェクトを破壊する
-                            Destroy(bullet, 2.0f);
+                            Destroy(bullet, 3.0f);
                         }
                     }
                 }

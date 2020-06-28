@@ -36,12 +36,9 @@ public class Missile : MonoBehaviour
 
                 GameObject Missile = (GameObject)Instantiate(MissilePrefab, transform.position, Quaternion.Euler(transform.parent.eulerAngles.x, transform.parent.eulerAngles.y, 0));
                 Rigidbody MissileRb = Missile.GetComponent<Rigidbody>();
-                //MissileRb.AddForce(transform.forward * ShotSpeed);
-
-                //MissileRb.AddForce(transform.forward * 1);
 
                 //射撃されてから2秒後に銃弾のオブジェクトを破壊する
-                Destroy(Missile, 5.0f);
+                Destroy(Missile, 10.0f);
 
                 LocalShotInterval = 0;
             }

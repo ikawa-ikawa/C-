@@ -23,6 +23,7 @@ public class EnemyManagement : MonoBehaviour
     //カメラに表示されているか
     private bool isRendered = false;
 
+
     //何かにぶつかった時に呼ばれる
     void OnCollisionEnter(Collision other)
     {
@@ -90,9 +91,6 @@ public class EnemyManagement : MonoBehaviour
             // 1秒後に消す
             Destroy(DamageUI, 1.0f);
         }
-
-
-        //Debug.Log("ヒット判定：（EnemyManagement）：" + other.gameObject.tag);
         
     }
 
@@ -107,7 +105,7 @@ public class EnemyManagement : MonoBehaviour
         MissileObje = GameObject.Find("Missile").gameObject.GetComponent<Missile2>();
 
         // キャンバス下に設定するために取得
-        canvas = GameObject.Find("Canvas");
+        canvas = GameObject.Find("Canvas").gameObject;
     }
 
     void Update()
@@ -119,6 +117,8 @@ public class EnemyManagement : MonoBehaviour
             Instantiate(ExplosionPrefab, this.transform.position, Quaternion.identity);
             //自分を削除
             Destroy(this.gameObject);
+
+            isRendered = false;
         }
     }
 

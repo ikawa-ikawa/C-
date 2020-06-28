@@ -187,7 +187,6 @@ public class JET : MonoBehaviour
         // ローリング終了処理
         if (RollingCnt >= RollingSpeed)
         {
-
             RollingFlagA = 0;
             RollingFlagD = 0;
             RollingCnt = 0;
@@ -202,7 +201,7 @@ public class JET : MonoBehaviour
         //前進
         if (Input.GetKey(KeyCode.W) && BstopFlag == 0)
         {
-            ForwardPower = ForwardPower + ForwardStatus;
+            ForwardPower = ForwardPower + ForwardStatus * Time.deltaTime;
 
 
             if (ForwardPower >= MaxForwardPower)
@@ -213,7 +212,7 @@ public class JET : MonoBehaviour
         else
         {
             //前進をやめた時の空気抵抗
-            ForwardPower = ForwardPower - BrakeStatus;
+            ForwardPower = ForwardPower - BrakeStatus * Time.deltaTime;
 
             if (ForwardPower <= 0)
             {
@@ -224,7 +223,7 @@ public class JET : MonoBehaviour
         //ブレーキ
         if (Input.GetKey(KeyCode.S) && BstopFlag == 0)
         {
-            ForwardPower = ForwardPower - BrakeStatus;
+            ForwardPower = ForwardPower - BrakeStatus * Time.deltaTime;
 
             if (ForwardPower <= 0)
             {
@@ -235,7 +234,7 @@ public class JET : MonoBehaviour
         //機体の傾け
         if (Input.GetKey(KeyCode.A) && BstopFlag == 0 && RollingFlagA == 0 && RollingFlagD == 0)
         {
-            TiltPower = TiltPower + TiltStatus;
+            TiltPower = TiltPower + TiltStatus * Time.deltaTime;
 
             AACnt = AACnt + 1 * Time.deltaTime;
 
@@ -246,13 +245,14 @@ public class JET : MonoBehaviour
         }
         if (Input.GetKey(KeyCode.D) && BstopFlag == 0 && RollingFlagA == 0 && RollingFlagD == 0)
         {
-            TiltPower = TiltPower + (TiltStatus * -1);
+            TiltPower = TiltPower - TiltStatus  * Time.deltaTime;
 
             DDCnt = DDCnt + 1 * Time.deltaTime;
 
             if (TiltPower < (MaxTiltPower * -1))
             {
                 TiltPower = (MaxTiltPower * -1);
+
             }
         }
         if (!Input.GetKey(KeyCode.A) && !Input.GetKey(KeyCode.D) && BstopFlag == 0)
@@ -260,11 +260,11 @@ public class JET : MonoBehaviour
         
             if (TiltPower > 0)
             {
-                TiltPower = TiltPower - (TiltStatus * 1.5f);
+                TiltPower = TiltPower - (TiltStatus * 1.5f) * Time.deltaTime;
             }
             if (TiltPower < 0)
             {
-                TiltPower = TiltPower + (TiltStatus * 1.5f);
+                TiltPower = TiltPower + (TiltStatus * 1.5f) * Time.deltaTime;
             }
 
             AACnt = 0;

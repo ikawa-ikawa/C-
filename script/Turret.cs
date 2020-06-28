@@ -8,15 +8,14 @@ public class Turret : MonoBehaviour
     public float MaxAngle;
 
     SearchArea2 Sys;
-    Transform JetTr;
+    GameObject Local;
 
 
     void Start()
     {
         //1度親に行かないと同階層のものが取れない
-        Sys = GameObject.Find("SearchArea2").GetComponent<SearchArea2>();
-
-        JetTr = GameObject.Find("JET").GetComponent<Transform>();
+        Local = transform.Find("SearchArea2").gameObject;
+        Sys = Local.GetComponent<SearchArea2>();
     }
 
 
@@ -24,9 +23,10 @@ public class Turret : MonoBehaviour
     {
         if (Sys.getFlag() == 1)
         {
+            //Sys = Local.GetComponent<SearchArea2>();
 
             //プレイヤーの方向差分
-            var Direction = JetTr.transform.position - transform.position;
+            var Direction = Sys.getPosition() - transform.position;
 
 
 

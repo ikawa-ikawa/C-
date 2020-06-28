@@ -5,13 +5,10 @@ using UnityEngine;
 
 public class LockOnSystem : MonoBehaviour
 {
-
-
     //存在する敵のリスト
     GameObject[] ExistenceEnemys;
 
     //画面内の敵の位置情報（２０）までしか格納できない
-    //Vector3[] Targets = new Vector3[200];
     List<Transform> Targets = new List<Transform>();
     int[] FlagList = new int[200];
 
@@ -80,12 +77,14 @@ public class LockOnSystem : MonoBehaviour
             i = i + 1;
         }
 
-
         i = 0;
 
         Targets.Clear();
         FlagListCircle.Clear();
         Concentrations.Clear();
+
+        //ここ正常
+        //Debug.Log(ExistenceEnemys.Length);
 
         while (i < FlagList.Length)
         {
