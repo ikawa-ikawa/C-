@@ -20,7 +20,7 @@ public class Missile : MonoBehaviour
     {
 
         //連射速度
-        LocalShotInterval = LocalShotInterval + 1;
+        LocalShotInterval = LocalShotInterval + 1 * Time.deltaTime;
 
         if(LocalShotInterval >= ShotInterval)
         {

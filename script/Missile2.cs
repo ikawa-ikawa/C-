@@ -27,6 +27,7 @@ public class Missile2 : MonoBehaviour
 
     LockOnSystem Sys;
     Transform Trans;
+    Collider Col;
 
 
     //何かにぶつかった時に呼ばれる
@@ -67,6 +68,8 @@ public class Missile2 : MonoBehaviour
 
         MotherShip = GameObject.FindWithTag("MotherShip");
 
+        Col = GetComponent<SphereCollider>();
+
         /*ロックオンシステム*/
         Sys = MotherShip.GetComponent<LockOnSystem>();
 
@@ -105,7 +108,7 @@ public class Missile2 : MonoBehaviour
                     transform.rotation = Quaternion.Slerp(transform.rotation, rotation, TurningPower);
 
                     //時間経過事に旋回力を上げる
-                    TurningPower = TurningPower + Time.deltaTime * 0.01f;
+                    TurningPower = TurningPower + Time.deltaTime * 0.005f;
                 }
 
                 //時間計測
@@ -140,6 +143,7 @@ public class Missile2 : MonoBehaviour
             TurningPower = 0;
 
             NonTarget = 1;
+            Col.isTrigger = true;
 
             Speed = 0;
 
