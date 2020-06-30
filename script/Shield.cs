@@ -27,14 +27,17 @@ public class Shield : MonoBehaviour
         }
         if (other.gameObject.tag == "EnemyMissile")
         {
-            //弾の攻撃力とか取るためのやつ
-            EnemyMissile Missile = other.gameObject.GetComponent<EnemyMissile>();
+            if (Sys.getRollingFlagA() == 0 && Sys.getRollingFlagD() == 0)
+            {
+                //弾の攻撃力とか取るためのやつ
+                EnemyMissile Missile = other.gameObject.GetComponent<EnemyMissile>();
 
-            //乱数を得る
-            int Damage = Missile.getAttackPower() + Missile.getErrorRange();
+                //乱数を得る
+                int Damage = Missile.getAttackPower() + Missile.getErrorRange();
 
-            //シールド値を減らす
-            Sys.setHP(Sys.getHP() - Damage);
+                //シールド値を減らす
+                Sys.setHP(Sys.getHP() - Damage);
+            }
         }
     }
 

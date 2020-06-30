@@ -5,7 +5,6 @@ using UnityEngine;
 public class EnemyMissileMuzzle : MonoBehaviour
 {
     public GameObject MissilePrefab;
-    public float ShotSpeed;
     public float ShotInterval;
 
     private float LocalShotInterval;

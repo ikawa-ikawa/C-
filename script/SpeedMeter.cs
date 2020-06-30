@@ -5,7 +5,6 @@ using UnityEngine.UI;
 
 public class SpeedMeter : MonoBehaviour
 {
-
     Rigidbody Jet;
     JET JetScript;
 

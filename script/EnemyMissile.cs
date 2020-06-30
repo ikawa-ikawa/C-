@@ -20,10 +20,11 @@ public class EnemyMissile : MonoBehaviour
     GameObject Player;
 
     Vector3 TargetPosition;
-    Vector3 ExplosionPosition;
+    //Vector3 ExplosionPosition;
 
     LockOnSystem Sys;
     Transform Trans;
+    JET Jet;
 
 
     //何かにぶつかった時に呼ばれる
@@ -35,13 +36,13 @@ public class EnemyMissile : MonoBehaviour
         }
         else
         {
-            Instantiate(ExplosionPrefab, this.transform.position, Quaternion.identity);
 
-            transform.localScale = Vector3.zero;//見えない大きさにする
+            if (Jet.getRollingFlagA() == 0 && Jet.getRollingFlagD() == 0)
+            {
+                Instantiate(ExplosionPrefab, this.transform.position, Quaternion.identity);
 
-            ExplosionFlag = 1;
-
-            ExplosionPosition = transform.position;
+                Destroy(this.gameObject);
+            }
 
         }
 
@@ -66,7 +67,14 @@ public class EnemyMissile : MonoBehaviour
 
         Trans = Player.GetComponent<Transform>();
 
+        Jet = GameObject.Find("JET").GetComponent<JET>();
+
         Dot = 0;
+    }
+
+    public int getPassingFlag()
+    {
+        return PassingFlag;
     }
 
     void Update()
@@ -120,6 +128,7 @@ public class EnemyMissile : MonoBehaviour
             //移動処理
             transform.position = transform.position + transform.forward * Speed * Time.deltaTime;
         }
+        /*
         else
         {
             TurningPower = 0;
@@ -127,7 +136,7 @@ public class EnemyMissile : MonoBehaviour
             Speed = 0;
 
             transform.position = ExplosionPosition;
-        }
+        }*/
 
 
     }

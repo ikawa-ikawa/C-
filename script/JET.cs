@@ -38,6 +38,11 @@ public class JET : MonoBehaviour
     int RollingFlagD = 0;
     int AFlag = 0;
     int DFlag = 0;
+
+    int RollingTmpFlag = 0;    //ローリングする直前の位置情報を格納したかどうか
+    Quaternion LocalRotation;   //直前の位置情報を格納する変数
+    Vector3 LocalVec;           //ローリング時，横移動のベクトル方向を退避させておく変数
+
     float ACnt = 0;
     float DCnt = 0;
 
@@ -85,7 +90,8 @@ public class JET : MonoBehaviour
         MainCam = GameObject.Find("MainCamera");
 
         SubCam.SetActive(true);
-        
+
+        LocalVec = transform.right;
     }
 
     void Update()
@@ -163,6 +169,23 @@ public class JET : MonoBehaviour
         {
             TiltPower = 0;
 
+            //なんか画面がカクつくからローリング直前の回転情報を退避，1回転した後で補正して戻す
+            if (RollingTmpFlag == 0)
+            {
+                LocalRotation = transform.rotation;
+                RollingTmpFlag = 1;
+
+                if( RollingFlagA == 1 )
+                {
+                    LocalVec = transform.right * -1;
+                }
+                else
+                {
+                    LocalVec = transform.right;
+                }
+
+            }
+
             if ( RollingFlagA == 1 )
             {
                 float LocalNum = (360 / RollingSpeed) * Time.deltaTime;
@@ -170,6 +193,8 @@ public class JET : MonoBehaviour
                 transform.Rotate(new Vector3(0, 0, LocalNum));
 
                 MainCam.transform.RotateAround(transform.localPosition, transform.forward, -LocalNum);
+
+                transform.position += LocalVec * (Time.deltaTime * 20f);
 
             }
             if( RollingFlagD == 1 )
@@ -179,6 +204,8 @@ public class JET : MonoBehaviour
                 transform.Rotate(new Vector3(0, 0, (360 / RollingSpeed) * Time.deltaTime * -1));
 
                 MainCam.transform.RotateAround(transform.localPosition, transform.forward, LocalNum);
+
+                transform.position += LocalVec * (Time.deltaTime * 20f);
             }
 
             RollingCnt = RollingCnt + Time.deltaTime;
@@ -190,6 +217,9 @@ public class JET : MonoBehaviour
             RollingFlagA = 0;
             RollingFlagD = 0;
             RollingCnt = 0;
+            RollingTmpFlag = 0;
+
+            transform.rotation = LocalRotation;
 
             MainCam.transform.localPosition = new Vector3(0, 10, -20);
             MainCam.transform.localEulerAngles = new Vector3(10, 0, 0);

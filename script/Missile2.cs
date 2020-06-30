@@ -13,8 +13,10 @@ public class Missile2 : MonoBehaviour
     public float TurningPower;
     public int AttackPower;
     public GameObject ExplosionPrefab;
+    public int Dammy;
 
     float Period = 0;
+
 
     int NonTarget;
     int PassingFlag = 0;
@@ -82,6 +84,7 @@ public class Missile2 : MonoBehaviour
         {
             NonTarget = 1;
         }
+
     }
 
 
@@ -150,6 +153,9 @@ public class Missile2 : MonoBehaviour
             transform.position = ExplosionPosition;
         }
 
-
+        if(Dammy == 1)
+        {
+            transform.position = new Vector3( 0, 0, 0 );
+        }
     }
 }
