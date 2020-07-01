@@ -8,13 +8,20 @@ public class Bullet : MonoBehaviour
     public float shotSpeed;
     public int shotCount = 300;
     public float AttackSpeed;
+    public int LeftFlag;
     private float shotInterval;
+
+
+    AudioSource Audio;
 
 
 
     void Start()
     {
-        
+        if(LeftFlag == 1)
+        {
+            Audio = GetComponent<AudioSource>();
+        }
     }
 
     void Update()
@@ -36,8 +43,12 @@ public class Bullet : MonoBehaviour
 
                 //射撃されてから2秒後に銃弾のオブジェクトを破壊する
                 Destroy(bullet, 2.0f);
-            }
 
+                if(LeftFlag == 1)
+                {
+                    Audio.PlayOneShot(Audio.clip);
+                }
+            }
         }
         else if (Input.GetKeyDown(KeyCode.R))
         {

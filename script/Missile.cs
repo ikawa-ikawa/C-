@@ -7,6 +7,7 @@ public class Missile : MonoBehaviour
     public GameObject MissilePrefab;
     public float ShotSpeed;
     public float ShotInterval;
+    public int LeftFlag;
 
     private float LocalShotInterval;
 
@@ -14,6 +15,7 @@ public class Missile : MonoBehaviour
     void Start()
     {
         LocalShotInterval = ShotInterval;
+
     }
 
     void Update()
@@ -41,6 +43,7 @@ public class Missile : MonoBehaviour
                 Destroy(Missile, 10.0f);
 
                 LocalShotInterval = 0;
+
             }
 
         }

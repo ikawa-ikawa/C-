@@ -60,6 +60,7 @@ public class JET : MonoBehaviour
     private GameObject MainCam;
     [SerializeField] GameObject SubCam = null;
 
+    AudioSource Audio;
 
     Rigidbody rigidbody_a;
 
@@ -92,10 +93,20 @@ public class JET : MonoBehaviour
         SubCam.SetActive(true);
 
         LocalVec = transform.right;
+
+        Audio = GetComponent<AudioSource>();
+
+        Audio.Play();
     }
 
     void Update()
     {
+        rigidbody_a.velocity = Vector3.zero;
+
+        //エンジン音処理
+        Audio.pitch = 1f + ( ( ForwardPower / MaxForwardPower ) / 3 );
+        Audio.volume = 0.1f + ((ForwardPower / MaxForwardPower));
+
         // カメラ処理
         if (Input.GetKey(KeyCode.Mouse2) /*&& RollingFlagA == 0 && RollingFlagD == 0*/)
         {
@@ -354,13 +365,13 @@ public class JET : MonoBehaviour
         if ( BstopFlag == 0 && RollingFlagA == 0 && RollingFlagD == 0)
         {
             //機首の上げ下げ
-            transform.Rotate(MousPointer_y / RiseStatus * Inv_Rise, 0, 0);
+            transform.Rotate(MousPointer_y / RiseStatus * Inv_Rise * Time.deltaTime, 0, 0);
 
             //機体回転
-            transform.Rotate(0, 0, MousPointer_x / RotationStatus * Inv_Rotation);
+            transform.Rotate(0, 0, MousPointer_x / RotationStatus * Inv_Rotation * Time.deltaTime);
 
             //回転と同時に機体を傾ける
-            transform.Rotate(0, ((MousPointer_x * -1) / RotationStatus) / 2 * Inv_Rotation, 0);
+            transform.Rotate(0, ((MousPointer_x * -1) / RotationStatus) / 2 * Inv_Rotation * Time.deltaTime, 0);
         }
 
 

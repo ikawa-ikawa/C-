@@ -14,6 +14,7 @@ public class Missile2 : MonoBehaviour
     public int AttackPower;
     public GameObject ExplosionPrefab;
     public int Dammy;
+    public AudioClip ExplosionSE;
 
     float Period = 0;
 
@@ -22,7 +23,9 @@ public class Missile2 : MonoBehaviour
     int PassingFlag = 0;
     int ExplosionFlag = 0;
 
+
     GameObject MotherShip;
+    Transform Jet;
 
     Vector3 TargetPosition;
     Vector3 ExplosionPosition;
@@ -30,6 +33,8 @@ public class Missile2 : MonoBehaviour
     LockOnSystem Sys;
     Transform Trans;
     Collider Col;
+
+    AudioSource Audio;
 
 
     //何かにぶつかった時に呼ばれる
@@ -49,6 +54,14 @@ public class Missile2 : MonoBehaviour
 
             ExplosionPosition = transform.position;
 
+            Audio.Stop();
+
+            Audio.clip = ExplosionSE;
+
+
+            Audio.spatialBlend = 0.9f; 
+
+            Audio.PlayOneShot(Audio.clip);
         }
 
     }
@@ -69,6 +82,7 @@ public class Missile2 : MonoBehaviour
         Period = 0;
 
         MotherShip = GameObject.FindWithTag("MotherShip");
+        Jet = GameObject.Find("JET").GetComponent<Transform>();
 
         Col = GetComponent<SphereCollider>();
 
@@ -85,6 +99,12 @@ public class Missile2 : MonoBehaviour
             NonTarget = 1;
         }
 
+        Audio = GetComponent<AudioSource>();
+
+        if(Dammy == 0)
+        {
+            Audio.PlayOneShot(Audio.clip);
+        }    
     }
 
 

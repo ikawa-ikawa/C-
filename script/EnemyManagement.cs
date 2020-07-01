@@ -23,6 +23,8 @@ public class EnemyManagement : MonoBehaviour
     //カメラに表示されているか
     private bool isRendered = false;
 
+    Rigidbody rigidbody_a;
+
 
     //何かにぶつかった時に呼ばれる
     void OnCollisionEnter(Collision other)
@@ -106,12 +108,16 @@ public class EnemyManagement : MonoBehaviour
 
         // キャンバス下に設定するために取得
         canvas = GameObject.Find("Canvas").gameObject;
+
+        rigidbody_a = GetComponent<Rigidbody>();
     }
 
     void Update()
     {
+        rigidbody_a.velocity = Vector3.zero;
+
         // HPが無くなった時の処理
-        if(HP < 0)
+        if (HP < 0)
         {
             //爆発エフェクトを生成
             Instantiate(ExplosionPrefab, this.transform.position, Quaternion.identity);

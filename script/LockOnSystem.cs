@@ -83,8 +83,6 @@ public class LockOnSystem : MonoBehaviour
         FlagListCircle.Clear();
         Concentrations.Clear();
 
-        //ここ正常
-        //Debug.Log(ExistenceEnemys.Length);
 
         while (i < FlagList.Length)
         {
@@ -134,12 +132,10 @@ public class LockOnSystem : MonoBehaviour
         //FlagListCircleの要素数が直前より減った場合の処理
         if(FlagListCircle.Count < ConcentrationCountBank)
         {
-
             if(ConcentrationCountBank - Concentration <= FlagListCircle.Count)
             {
-                Concentration = Concentration - (ConcentrationCountBank - FlagListCircle.Count);
+                Concentration = Concentration - (ConcentrationCountBank - FlagListCircle.Count);           
             }
-
         }
         //逆に増えた場合
         if (FlagListCircle.Count > ConcentrationCountBank)
@@ -206,6 +202,16 @@ public class LockOnSystem : MonoBehaviour
         }
 
         return null;
+    }
+
+    public int getConcentration2()
+    {
+        if (Concentrations.Count != 0)
+        {
+            return Concentration;
+        }
+
+        return -1;
     }
 
     public int getConcentrationsCount()

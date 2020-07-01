@@ -40,6 +40,8 @@ public class LockOnMarker : MonoBehaviour
         //ロックオンサークル内に居る敵のリストを取得
         LockOnEnemysFlag = Sys.LockOngetTargetsFlag();
 
+        //Debug.Log(Sys.getTarget().Count);
+
         if (enemys.Count >= markernum + 1)
         {
             //enemys[markernum]の範囲外参照を避けるための処理
@@ -57,9 +59,9 @@ public class LockOnMarker : MonoBehaviour
                 //画像を計算した位置にポジションを変える
                 this.transform.position = new Vector3(position.x, position.y, 0f);
 
-
+                //↓ここ間違えてね？//間違えてねぇよ
                 //ロックオンサークル内に居れば
-                if( LockOnEnemysFlag[markernum] == 1 )
+                if ( LockOnEnemysFlag[markernum] == 1 )
                 {
                     //マーカーを表示
                     Img.color = new Color(0f, 1f, 1f, 1f);
@@ -67,11 +69,12 @@ public class LockOnMarker : MonoBehaviour
                     //マーカーを回転
                     transform.localEulerAngles = new Vector3(0, 0, transform.localEulerAngles.z + 0.5f);
 
-                    if(Sys.getFlagListCircle() == markernum)
+                    if (Sys.getFlagListCircle() == markernum)
                     {
                         //赤色にして表示
                         Img.color = new Color(1f, 0f, 0f, 1f);
                     }
+
                 }
                 else
                 {

@@ -13,6 +13,7 @@ public class MissileDistance : MonoBehaviour
     GameObject[] Missile;
 
     float Distance;
+    float Min;
 
     int Flag;
 
@@ -26,9 +27,10 @@ public class MissileDistance : MonoBehaviour
         MissileText = GetComponent<Text>();
 
         Distance = 0;
+        Min = 1000000000;
     }
 
-    void Update()
+    void FixedUpdate()
     {
         //敵のミサイル処理
         Missile = GameObject.FindGameObjectsWithTag("EnemyMissile");
@@ -37,6 +39,7 @@ public class MissileDistance : MonoBehaviour
         MissileText.color = new Color(0f, 0f, 0f, 0f);
 
         Flag = 0;
+        Min = 1000000000;
 
         if (Missile != null)
         {
@@ -50,6 +53,11 @@ public class MissileDistance : MonoBehaviour
                     MissileText.color = new Color(1f, 0.5f, 0f, 1f);
                     Distance = (Missile[i].GetComponent<Transform>().position - Jet.transform.position).magnitude;
                     Flag = 1;
+
+                    if(Distance < Min)
+                    {
+                        Min = Distance;
+                    }
                 }
                 else
                 {
@@ -59,10 +67,8 @@ public class MissileDistance : MonoBehaviour
 
         }
 
-
-
         // テキストの表示を入れ替える
-        MissileText.text = "" + Distance.ToString("f2");
+        MissileText.text = "" + Min.ToString("f0");
     }
 
     public int getMissileFlag()
