@@ -86,4 +86,10 @@ public class SearchArea : MonoBehaviour
     {
         return CorrectionPosition;
     }
+
+    //偏差計算無し
+    public Vector3 getPosition2()
+    {
+        return Position;
+    }
 }

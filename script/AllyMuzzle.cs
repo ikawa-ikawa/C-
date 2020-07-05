@@ -7,15 +7,23 @@ public class AllyMuzzle : MonoBehaviour
     public GameObject bulletPrefab;
     public float shotSpeed;
     public float AttackSpeed;
+    public int LeftFlag;
     private float shotInterval;
 
 
     SearchArea Sys;
 
+    AudioSource Audio;
+
     void Start()
     {
         //サーチエリアを取得
         Sys = transform.parent.transform.parent.transform.parent.Find("SearchArea").GetComponent<SearchArea>();
+
+        if (LeftFlag == 1)
+        {
+            Audio = GetComponent<AudioSource>();
+        }
 
     }
 
@@ -50,6 +58,11 @@ public class AllyMuzzle : MonoBehaviour
 
                         //射撃されてから2秒後に銃弾のオブジェクトを破壊する
                         Destroy(bullet, 2.0f);
+
+                        if (LeftFlag == 1)
+                        {
+                            Audio.PlayOneShot(Audio.clip);
+                        }
                     }
                 }
                 

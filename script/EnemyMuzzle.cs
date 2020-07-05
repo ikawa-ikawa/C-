@@ -14,12 +14,14 @@ public class EnemyMuzzle : MonoBehaviour
     GameObject Local;
     SearchArea2 Sys;
     Transform Jet;
+    AudioSource Audio;
 
     void Start()
     {
         Local = transform.parent.Find("SearchArea2").gameObject;
         Sys = Local.GetComponent<SearchArea2>();
         Jet = GameObject.Find("JET").GetComponent<Transform>();
+        Audio = GetComponent<AudioSource>();
     }
 
     void Update()
@@ -53,6 +55,7 @@ public class EnemyMuzzle : MonoBehaviour
 
                             //射撃されてから3秒後に銃弾のオブジェクトを破壊する
                             Destroy(bullet, 3.0f);
+                            Audio.PlayOneShot(Audio.clip);
                         }
                         if (ForwardNum == 1)
                         {
@@ -63,6 +66,7 @@ public class EnemyMuzzle : MonoBehaviour
 
                             //射撃されてから3秒後に銃弾のオブジェクトを破壊する
                             Destroy(bullet, 3.0f);
+                            Audio.PlayOneShot(Audio.clip);
                         }
                     }
                 }

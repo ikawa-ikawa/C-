@@ -23,7 +23,7 @@ public class AllyTurret : MonoBehaviour
             {
 
                 //敵の方向情報を取得して差分を計算
-                var Direction = Sys.getPosition()/*.position*/ - transform.position;
+                var Direction = Sys.getPosition2()/*.position*/ - transform.position;
 
                 //よくわからん
                 Quaternion Rotation = Quaternion.LookRotation(Direction);
